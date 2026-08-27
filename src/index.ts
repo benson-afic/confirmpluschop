@@ -174,7 +174,7 @@ export default {
         const chatId = update.message.chat.id;
         const member = update.message.from;
         
-        const testText = `Test mode, [${member.first_name}](tg://user?id=${member.id})! \n\nTap the button below to open the mini app.`;
+        const testText = `Test mode, ${member ? `[${member.first_name}](tg://user?id=${member.id})` : 'User'}! \n\nTap the button below to open the mini app.`;
         
         await fetch(`https://api.telegram.org/bot${env.BOT_TOKEN}/sendMessage`, {
           method: "POST",
