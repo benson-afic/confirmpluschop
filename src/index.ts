@@ -170,6 +170,29 @@ export default {
             })
           });
         }
+      } else if (update.message && typeof update.message.text === 'string' && update.message.text.startsWith('/test')) {
+        const chatId = update.message.chat.id;
+        const member = update.message.from;
+        
+        const testText = `Test mode, [${member.first_name}](tg://user?id=${member.id})! \n\nTap the button below to open the mini app.`;
+        
+        await fetch(`https://api.telegram.org/bot${env.BOT_TOKEN}/sendMessage`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            chat_id: chatId,
+            text: testText,
+            parse_mode: "Markdown",
+            reply_markup: {
+              inline_keyboard: [[
+                {
+                  text: "Confirm Plus Chop! 🛑",
+                  web_app: { url: "https://confirm-plus-chop-ui.pages.dev" } 
+                }
+              ]]
+            }
+          })
+        });
       }
       return new Response("OK", { status: 200 });
     } catch (error) {
