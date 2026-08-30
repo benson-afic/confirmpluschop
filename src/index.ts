@@ -74,7 +74,7 @@ const getSuccessMessages = (firstName: string, isTest: boolean = false) => {
     `${prefix}Welcome ${firstName}! You passed the bot check with flying colors.`,
     `${prefix}Aiyoh so smart, ${firstName} passed! Welcome to the group!`,
     `${prefix}${firstName} is in! Human verification cleared.`,
-    `${prefix}Boleh lah! ${firstName} is verified. Let the chatting begin!`,
+    `${prefix}Swee lah! ${firstName} is verified. Let the chatting begin!`,
     `${prefix}Done and dusted! ${firstName} is verified. Welcome aboard!`
   ];
   return messages[Math.floor(Math.random() * messages.length)];
