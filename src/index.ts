@@ -60,7 +60,17 @@ async function verifyTelegramWebAppData(initData: string, botToken: string): Pro
 
 export default {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
-    if (request.method !== "POST") return new Response("OK", { status: 200 });
+    const corsHeaders = {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, HEAD, POST, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type",
+    };
+
+    if (request.method === "OPTIONS") {
+      return new Response(null, { headers: corsHeaders });
+    }
+
+    if (request.method !== "POST") return new Response("OK", { status: 200, headers: corsHeaders });
 
     const url = new URL(request.url);
 
@@ -71,28 +81,22 @@ export default {
         const initData = body.initData;
         
         if (!initData) {
-          return new Response(JSON.stringify({ error: "Missing initData" }), { status: 400, headers: { "Content-Type": "application/json" } });
+          return new Response(JSON.stringify({ error: "Missing initData" }), { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } });
         }
         
         const data = await verifyTelegramWebAppData(initData, env.BOT_TOKEN);
         
         if (!data || !data.user) {
-          return new Response(JSON.stringify({ error: "Invalid initData signature" }), { status: 403, headers: { "Content-Type": "application/json" } });
+          return new Response(JSON.stringify({ error: "Invalid initData signature" }), { status: 403, headers: { "Content-Type": "application/json", ...corsHeaders } });
         }
         
         const userId = data.user.id;
-        // In some Telegram Mini App flows, chat info might be in the query, or we rely on a known chat ID.
-        // Assuming 'chat' is part of initData when opened from an inline button in the group.
         const chatId = data.chat ? data.chat.id : null; 
         
         if (!chatId) {
-          console.warn("Could not determine chatId from initData.");
-          // If chatId isn't available, you would need to pass it from frontend or store it.
-          // For now, we'll return an error if it's missing, though we might need to handle it differently if your app uses a single group.
-          return new Response(JSON.stringify({ error: "Missing chat context" }), { status: 400, headers: { "Content-Type": "application/json" } });
+          return new Response(JSON.stringify({ error: "Missing chat context" }), { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } });
         }
 
-        // Unmute the user
         await fetch(`https://api.telegram.org/bot${env.BOT_TOKEN}/restrictChatMember`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -110,12 +114,12 @@ export default {
 
         return new Response(JSON.stringify({ success: true, message: "User verified and unmuted" }), { 
           status: 200, 
-          headers: { "Content-Type": "application/json" } 
+          headers: { "Content-Type": "application/json", ...corsHeaders } 
         });
 
       } catch (error) {
         console.error("Verification Error:", error);
-        return new Response(JSON.stringify({ error: "Internal Server Error" }), { status: 500, headers: { "Content-Type": "application/json" } });
+        return new Response(JSON.stringify({ error: "Internal Server Error" }), { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } });
       }
     }
 
