@@ -78,16 +78,19 @@ export default {
     if (url.pathname === '/verify' || url.pathname === '/api/verify') {
       try {
         const body = await request.json() as any;
+        console.log("Verify Request Body:", JSON.stringify(body));
         const initData = body.initData;
         const bodyChatId = body.chatId;
         
         if (!initData) {
+          console.log("Failing: Missing initData");
           return new Response(JSON.stringify({ error: "Missing initData" }), { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } });
         }
         
         const data = await verifyTelegramWebAppData(initData, env.BOT_TOKEN);
         
         if (!data || !data.user) {
+          console.log("Failing: Invalid initData signature. data=", JSON.stringify(data));
           return new Response(JSON.stringify({ error: "Invalid initData signature" }), { status: 403, headers: { "Content-Type": "application/json", ...corsHeaders } });
         }
         
@@ -95,6 +98,7 @@ export default {
         const chatId = (data.chat ? data.chat.id : null) || bodyChatId; 
         
         if (!chatId) {
+          console.log("Failing: Missing chat context");
           return new Response(JSON.stringify({ error: "Missing chat context" }), { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } });
         }
 
