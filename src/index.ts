@@ -58,6 +58,29 @@ async function verifyTelegramWebAppData(initData: string, botToken: string): Pro
   return null;
 }
 
+const getWelcomeMessages = (member: any, isTest: boolean = false) => {
+  const name = `[${member.first_name}](tg://user?id=${member.id})`;
+  const prefix = isTest ? "🧪 [Test Mode] " : "";
+  const messages = [
+    `${prefix}Welcome ${name}! Please tap the button below to prove you are human before you can chat.`,
+    `${prefix}${name} just joined! Quickly press the button below to confirm you are not a bot.`,
+    `${prefix}Hello ${name}! You want to chat? Must verify first! Just tap the Confirm Plus Chop button below.`,
+    `${prefix}${name} is here! Please press the button below to show you're a real person. Thanks!`,
+    `${prefix}Awesome, ${name} joined! Before you start talking, please do the human test below.`,
+    `${prefix}Welcome to the group ${name}! Click the button below to verify yourself, otherwise you cannot talk.`,
+    `${prefix}Hi ${name}, welcome! Tap the button below to confirm you're human before chatting.`,
+    `${prefix}Hey ${name}! Just a quick human check, press the button below to start chatting.`,
+    `${prefix}Welcome aboard, ${name}! Please hit the Confirm Plus Chop button below to verify your identity.`,
+    `${prefix}${name} arrived! Don't forget to verify yourself by tapping the button below so you can send messages.`,
+    `${prefix}Glad to have you here, ${name}! Please clear the human check below to unlock the chat.`,
+    `${prefix}Greetings ${name}! Just one more step, press the button below to verify you're a real person.`,
+    `${prefix}Hello there, ${name}! We need a quick human check, please tap the button below.`,
+    `${prefix}Welcome ${name}! Verify yourself with the button below and jump right into the conversation.`,
+    `${prefix}Look who's here, it's ${name}! Please press the button below to prove you're not a robot.`
+  ];
+  return messages[Math.floor(Math.random() * messages.length)];
+};
+
 export default {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const corsHeaders = {
@@ -157,8 +180,7 @@ export default {
             })
           });
 
-          // Send the Welcome Message with the Mini App button
-          const welcomeText = `Welcome [${member.first_name}](tg://user?id=${member.id})! \n\nPlease tap the button below to prove you are human before you can chat.`;
+          const welcomeText = getWelcomeMessages(member, false);
           
           await fetch(`https://api.telegram.org/bot${env.BOT_TOKEN}/sendMessage`, {
             method: "POST",
@@ -170,9 +192,8 @@ export default {
               reply_markup: {
                 inline_keyboard: [[
                   {
-                    text: "Confirm Plus Chop! 🛑",
-                    // We will replace this placeholder URL with your React Mini App later!
-                    web_app: { url: `https://confirm-plus-chop-ui.pages.dev?chatId=${chatId}` } 
+                    text: "Verify to Chat ✅",
+                    web_app: { url: `https://confirm-plus-chop-ui.pages.dev?chatId=${chatId}&targetUserId=${member.id}` } 
                   }
                 ]]
               }
@@ -183,7 +204,7 @@ export default {
         const chatId = update.message.chat.id;
         const member = update.message.from;
         
-        const testText = `Test mode, ${member ? `[${member.first_name}](tg://user?id=${member.id})` : 'User'}! \n\nTap the button below to open the mini app.`;
+        const testText = getWelcomeMessages(member, true);
         
         await fetch(`https://api.telegram.org/bot${env.BOT_TOKEN}/sendMessage`, {
           method: "POST",
@@ -195,8 +216,8 @@ export default {
             reply_markup: {
               inline_keyboard: [[
                 {
-                  text: "Confirm Plus Chop! 🛑",
-                  web_app: { url: `https://confirm-plus-chop-ui.pages.dev?chatId=${chatId}` } 
+                  text: "Verify to Chat ✅",
+                  web_app: { url: `https://confirm-plus-chop-ui.pages.dev?chatId=${chatId}&targetUserId=${member.id}` } 
                 }
               ]]
             }
