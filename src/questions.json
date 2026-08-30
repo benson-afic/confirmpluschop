@@ -1,0 +1,44 @@
+[
+  {
+    "id": "cat",
+    "image": "images/Cat.jpg",
+    "question": "What animal is this?",
+    "options": ["Community Dog", "Community Cat", "Otter", "Macaque"],
+    "answer": "Community Cat"
+  },
+  {
+    "id": "funan",
+    "image": "images/Funan.jpg",
+    "question": "Which mall in Singapore is shown here?",
+    "options": ["Funan", "ION Orchard", "VivoCity", "Suntec City"],
+    "answer": "Funan"
+  },
+  {
+    "id": "kaya",
+    "image": "images/Kaya.jpg",
+    "question": "What popular local spread is this?",
+    "options": ["Peanut Butter", "Nutella", "Kaya", "Marmite"],
+    "answer": "Kaya"
+  },
+  {
+    "id": "money",
+    "image": "images/Money.jpg",
+    "question": "What currency is this?",
+    "options": ["Singapore Dollar (SGD)", "Malaysian Ringgit (MYR)", "US Dollar (USD)", "Brunei Dollar (BND)"],
+    "answer": "Singapore Dollar (SGD)"
+  },
+  {
+    "id": "nasi-lemak",
+    "image": "images/Nasi Lemak.jpg",
+    "question": "What is this famous local dish?",
+    "options": ["Chicken Rice", "Nasi Lemak", "Laksa", "Char Kway Teow"],
+    "answer": "Nasi Lemak"
+  },
+  {
+    "id": "tissue",
+    "image": "images/Tissue.jpg",
+    "question": "What is this item commonly used for at hawker centres?",
+    "options": ["Wiping tables only", "Choping (reserving) a table", "Donating to charity", "Wiping sweat"],
+    "answer": "Choping (reserving) a table"
+  }
+]

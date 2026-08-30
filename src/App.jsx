@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
+import questionsData from './questions.json';
 
 const App = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -75,36 +76,9 @@ const App = () => {
     return () => clearInterval(timerRef.current);
   }, [showQuiz, currentQuestionIndex, isSuccess, lockEndTime]);
 
-  const generateQuestions = () => {
-    const newQuestions = [];
-    for (let i = 0; i < 3; i++) {
-      const num1 = Math.floor(Math.random() * 10) + 1;
-      const num2 = Math.floor(Math.random() * 10) + 1;
-      const operators = ['+', '-', '*'];
-      const op = operators[Math.floor(Math.random() * operators.length)];
-      
-      let answer;
-      if (op === '+') answer = num1 + num2;
-      else if (op === '-') answer = num1 - num2;
-      else if (op === '*') answer = num1 * num2;
-
-      // Generate options
-      const options = new Set([answer]);
-      while (options.size < 4) {
-        options.add(answer + Math.floor(Math.random() * 10) - 5);
-      }
-      
-      newQuestions.push({
-        text: `What is ${num1} ${op} ${num2}?`,
-        answer,
-        options: Array.from(options).sort(() => Math.random() - 0.5)
-      });
-    }
-    return newQuestions;
-  };
-
   const startQuiz = () => {
-    setQuestions(generateQuestions());
+    const shuffled = [...questionsData].sort(() => 0.5 - Math.random());
+    setQuestions(shuffled.slice(0, 3));
     setCurrentQuestionIndex(0);
     setTimer(10);
     setShowQuiz(true);
@@ -214,7 +188,17 @@ const App = () => {
                   style={{ width: `${(timer / 10) * 100}%` }}
                 ></div>
               </div>
-              <p className="text-lg font-bold mb-6">{questions[currentQuestionIndex]?.text}</p>
+              <p className="text-lg font-bold mb-4">{questions[currentQuestionIndex]?.question}</p>
+              
+              {questions[currentQuestionIndex]?.image && (
+                <div className="mb-6 flex justify-center">
+                  <img 
+                    src={`/${questions[currentQuestionIndex].image}`} 
+                    alt="Question" 
+                    className="max-h-48 rounded-lg shadow-sm object-contain"
+                  />
+                </div>
+              )}
               
               <div className="grid grid-cols-2 gap-3">
                 {questions[currentQuestionIndex]?.options.map((option, idx) => (
