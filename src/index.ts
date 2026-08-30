@@ -79,6 +79,7 @@ export default {
       try {
         const body = await request.json() as any;
         const initData = body.initData;
+        const bodyChatId = body.chatId;
         
         if (!initData) {
           return new Response(JSON.stringify({ error: "Missing initData" }), { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } });
@@ -91,7 +92,7 @@ export default {
         }
         
         const userId = data.user.id;
-        const chatId = data.chat ? data.chat.id : null; 
+        const chatId = (data.chat ? data.chat.id : null) || bodyChatId; 
         
         if (!chatId) {
           return new Response(JSON.stringify({ error: "Missing chat context" }), { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } });
@@ -167,7 +168,7 @@ export default {
                   {
                     text: "Confirm Plus Chop! 🛑",
                     // We will replace this placeholder URL with your React Mini App later!
-                    web_app: { url: "https://confirm-plus-chop-ui.pages.dev" } 
+                    web_app: { url: `https://confirm-plus-chop-ui.pages.dev?chatId=${chatId}` } 
                   }
                 ]]
               }
@@ -191,7 +192,7 @@ export default {
               inline_keyboard: [[
                 {
                   text: "Confirm Plus Chop! 🛑",
-                  web_app: { url: "https://confirm-plus-chop-ui.pages.dev" } 
+                  web_app: { url: `https://confirm-plus-chop-ui.pages.dev?chatId=${chatId}` } 
                 }
               ]]
             }
