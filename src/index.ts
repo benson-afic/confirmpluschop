@@ -193,7 +193,7 @@ export default {
                 inline_keyboard: [[
                   {
                     text: "Verify to Chat ✅",
-                    web_app: { url: `https://confirm-plus-chop-ui.pages.dev?chatId=${chatId}&targetUserId=${member.id}` } 
+                    web_app: { url: `https://confirm-plus-chop-ui.pages.dev?chatId=${chatId}&targetUserId=${member.id}&groupName=${encodeURIComponent(update.message.chat.title || 'Private Chat')}` } 
                   }
                 ]]
               }
@@ -217,7 +217,7 @@ export default {
               inline_keyboard: [[
                 {
                   text: "Verify to Chat ✅",
-                  web_app: { url: `https://confirm-plus-chop-ui.pages.dev?chatId=${chatId}&targetUserId=${member.id}` } 
+                  web_app: { url: `https://confirm-plus-chop-ui.pages.dev?chatId=${chatId}&targetUserId=${member.id}&groupName=${encodeURIComponent(update.message.chat.title || 'Private Chat')}` } 
                 }
               ]]
             }
