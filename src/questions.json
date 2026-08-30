@@ -2,15 +2,15 @@
   {
     "id": "cat",
     "image": "images/Cat.jpg",
-    "question": "What animal is this?",
-    "options": ["Community Dog", "Community Cat", "Otter", "Macaque"],
-    "answer": "Community Cat"
+    "question": "How to check for sterilized cat?",
+    "options": ["Check collar", "Check ear", "Scan RFID Chip", "Check private area"],
+    "answer": "Check ear"
   },
   {
     "id": "funan",
     "image": "images/Funan.jpg",
     "question": "Which mall in Singapore is shown here?",
-    "options": ["Funan", "ION Orchard", "VivoCity", "Suntec City"],
+    "options": ["Marina Bay Sands", "ION Orchard", "Funan", "Suntec City"],
     "answer": "Funan"
   },
   {
@@ -23,22 +23,22 @@
   {
     "id": "money",
     "image": "images/Money.jpg",
-    "question": "What currency is this?",
-    "options": ["Singapore Dollar (SGD)", "Malaysian Ringgit (MYR)", "US Dollar (USD)", "Brunei Dollar (BND)"],
-    "answer": "Singapore Dollar (SGD)"
+    "question": "Who is this?",
+    "options": ["Lee Kuan Yew", "Zubir Said", "Taufik Batisah", "Yusof bin Ishak"],
+    "answer": "Yusof bin Ishak"
   },
   {
     "id": "nasi-lemak",
     "image": "images/Nasi Lemak.jpg",
     "question": "What is this famous local dish?",
-    "options": ["Chicken Rice", "Nasi Lemak", "Laksa", "Char Kway Teow"],
+    "options": ["Chicken Rice", "Nasi Lemak", "Nasi Padang", "Seafood Fried Rice"],
     "answer": "Nasi Lemak"
   },
   {
     "id": "tissue",
     "image": "images/Tissue.jpg",
-    "question": "What is this item commonly used for at hawker centres?",
-    "options": ["Wiping tables only", "Choping (reserving) a table", "Donating to charity", "Wiping sweat"],
-    "answer": "Choping (reserving) a table"
+    "question": "What does this mean?",
+    "options": ["Clean", "Chope", "Free Tissue", "Wiping sweat"],
+    "answer": "Chope"
   }
 ]
