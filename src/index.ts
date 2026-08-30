@@ -58,6 +58,28 @@ async function verifyTelegramWebAppData(initData: string, botToken: string): Pro
   return null;
 }
 
+const getSuccessMessages = (firstName: string, isTest: boolean = false) => {
+  const prefix = isTest ? "🧪 [Test Mode] " : "";
+  const messages = [
+    `${prefix}Swee lah! ${firstName} passed the human test. Welcome to the group!`,
+    `${prefix}Wah, ${firstName} is definitely human. Can chat now!`,
+    `${prefix}Steady pom pi pi! ${firstName} is verified. Say hi everyone!`,
+    `${prefix}Confirm plus chop, ${firstName} is not a bot. Welcome!`,
+    `${prefix}Power lah ${firstName}! Verification successful. Enjoy the chat.`,
+    `${prefix}${firstName} passed! No bot can answer that. Welcome inside!`,
+    `${prefix}Good job ${firstName}! You're verified. Welcome to our group!`,
+    `${prefix}Huat ah! ${firstName} passed the test. Welcome!`,
+    `${prefix}${firstName} is a real person! Verification complete.`,
+    `${prefix}Solid! ${firstName} verified successfully. You can now chat!`,
+    `${prefix}Welcome ${firstName}! You passed the bot check with flying colors.`,
+    `${prefix}Aiyoh so smart, ${firstName} passed! Welcome to the group!`,
+    `${prefix}${firstName} is in! Human verification cleared.`,
+    `${prefix}Boleh lah! ${firstName} is verified. Let the chatting begin!`,
+    `${prefix}Done and dusted! ${firstName} is verified. Welcome aboard!`
+  ];
+  return messages[Math.floor(Math.random() * messages.length)];
+};
+
 const getWelcomeMessages = (member: any, isTest: boolean = false) => {
   const name = `[${member.first_name}](tg://user?id=${member.id})`;
   const prefix = isTest ? "🧪 [Test Mode] " : "";
@@ -140,6 +162,20 @@ export default {
           })
         });
 
+        if (body.messageId) {
+          const successText = getSuccessMessages(data.user.first_name, false);
+          await fetch(`https://api.telegram.org/bot${env.BOT_TOKEN}/editMessageText`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              chat_id: chatId,
+              message_id: body.messageId,
+              text: successText,
+              parse_mode: "Markdown"
+            })
+          });
+        }
+
         return new Response(JSON.stringify({ success: true, message: "User verified and unmuted" }), { 
           status: 200, 
           headers: { "Content-Type": "application/json", ...corsHeaders } 
@@ -182,23 +218,36 @@ export default {
 
           const welcomeText = getWelcomeMessages(member, false);
           
-          await fetch(`https://api.telegram.org/bot${env.BOT_TOKEN}/sendMessage`, {
+          const welcomeRes = await fetch(`https://api.telegram.org/bot${env.BOT_TOKEN}/sendMessage`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               chat_id: chatId,
               text: welcomeText,
-              parse_mode: "Markdown",
-              reply_markup: {
-                inline_keyboard: [[
-                  {
-                    text: "Verify to Chat ✅",
-                    web_app: { url: `https://confirm-plus-chop-ui.pages.dev?chatId=${chatId}&targetUserId=${member.id}&groupName=${encodeURIComponent(update.message.chat.title || 'Private Chat')}` } 
-                  }
-                ]]
-              }
+              parse_mode: "Markdown"
             })
           });
+
+          const welcomeData = await welcomeRes.json() as any;
+          if (welcomeData.ok) {
+            const messageId = welcomeData.result.message_id;
+            await fetch(`https://api.telegram.org/bot${env.BOT_TOKEN}/editMessageReplyMarkup`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                chat_id: chatId,
+                message_id: messageId,
+                reply_markup: {
+                  inline_keyboard: [[
+                    {
+                      text: "Verify to Chat ✅",
+                      web_app: { url: `https://confirm-plus-chop-ui.pages.dev?chatId=${chatId}&targetUserId=${member.id}&groupName=${encodeURIComponent(update.message.chat.title || 'Private Chat')}&messageId=${messageId}` } 
+                    }
+                  ]]
+                }
+              })
+            });
+          }
         }
       } else if (update.message && typeof update.message.text === 'string' && update.message.text.startsWith('/test')) {
         const chatId = update.message.chat.id;
@@ -206,23 +255,36 @@ export default {
         
         const testText = getWelcomeMessages(member, true);
         
-        await fetch(`https://api.telegram.org/bot${env.BOT_TOKEN}/sendMessage`, {
+        const testRes = await fetch(`https://api.telegram.org/bot${env.BOT_TOKEN}/sendMessage`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             chat_id: chatId,
             text: testText,
-            parse_mode: "Markdown",
-            reply_markup: {
-              inline_keyboard: [[
-                {
-                  text: "Verify to Chat ✅",
-                  web_app: { url: `https://confirm-plus-chop-ui.pages.dev?chatId=${chatId}&targetUserId=${member.id}&groupName=${encodeURIComponent(update.message.chat.title || 'Private Chat')}` } 
-                }
-              ]]
-            }
+            parse_mode: "Markdown"
           })
         });
+
+        const testData = await testRes.json() as any;
+        if (testData.ok) {
+          const messageId = testData.result.message_id;
+          await fetch(`https://api.telegram.org/bot${env.BOT_TOKEN}/editMessageReplyMarkup`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              chat_id: chatId,
+              message_id: messageId,
+              reply_markup: {
+                inline_keyboard: [[
+                  {
+                    text: "Verify to Chat ✅",
+                    web_app: { url: `https://confirm-plus-chop-ui.pages.dev?chatId=${chatId}&targetUserId=${member.id}&groupName=${encodeURIComponent(update.message.chat.title || 'Private Chat')}&messageId=${messageId}` } 
+                  }
+                ]]
+              }
+            })
+          });
+        }
       }
       return new Response("OK", { status: 200 });
     } catch (error) {
